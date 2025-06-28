@@ -31,7 +31,6 @@ mongoose.connect(process.env.MONGODB_URI, {
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Import schemas (update the path as needed)
 const { Worker, Request } = require('./workerSchema');
 
 // Create a worker profile
@@ -84,5 +83,5 @@ app.post('/api/service-requests', async (req, res) => {
   }
 });
 
-// Vercel requires exporting the app as a module
+// Export for Vercel
 module.exports = app;
