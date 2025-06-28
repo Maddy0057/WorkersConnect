@@ -31,6 +31,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+// Import schemas (update the path as needed)
 const { Worker, Request } = require('./workerSchema');
 
 // Create a worker profile
@@ -43,7 +44,6 @@ app.post('/api/workers', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
-
 
 // Get a worker profile
 app.get('/api/workers/:id', async (req, res) => {
@@ -71,14 +71,12 @@ app.get('/api/workers', async (req, res) => {
 app.post('/api/service-requests', async (req, res) => {
   try {
     const { workerId, clientName, clientEmail, message } = req.body;
-    
-    const newRequest = new ServiceRequest({
+    const newRequest = new Request({
       workerId,
       clientName,
       clientEmail,
       message
     });
-
     await newRequest.save();
     res.status(201).json({ message: 'Request submitted successfully' });
   } catch (error) {
@@ -86,4 +84,5 @@ app.post('/api/service-requests', async (req, res) => {
   }
 });
 
+// Vercel requires exporting the app as a module
 module.exports = app;
