@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Worker Profile - WorkerConnect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --secondary: #3B82F6;
+            --accent: #2563EB;
+            --light: #F9FAFB;
+            --dark: #111827;
+            --gray: #6B7280;
+            --light-gray: #E5E7EB;
+            --success: #10B981;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.75rem 1.75rem;
+            border-radius: 0.375rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 0.375rem;
+            font-size: 0.9375rem;
+        }
+        .work-item {
+            border: 1px solid var(--light-gray);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-4xl mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4">Create Worker Profile</h1>
+        <form id="worker-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required placeholder="e.g., John Smith">
+            </div>
+            <div class="form-group">
+                <label for="profilePicture">Profile Picture (Google Drive URL)</label>
+                <input type="url" id="profilePicture" name="profilePicture" required placeholder="e.g., https://drive.google.com/uc?export=view&id=<file_id>">
+            </div>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required placeholder="e.g., Master Plumber">
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required placeholder="e.g., Seattle, WA • Serving 25 mile radius">
+            </div>
+            <div class="form-group">
+                <label for="about">About</label>
+                <textarea id="about" name="about" required rows="6" placeholder="Describe your experience and expertise..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="badges">Badges (comma-separated)</label>
+                <input type="text" id="badges" name="badges" placeholder="e.g., Verified Professional,Licensed,Insured">
+            </div>
+            <div id="best-works" class="mb-4">
+                <h2 class="text-xl font-medium mb-2">Best Works</h2>
+                <div class="work-item" id="work-0">
+                    <div class="form-group">
+                        <label for="bestWorks-0-title">Work Title</label>
+                        <input type="text" id="bestWorks-0-title" name="bestWorks[0].title" placeholder="e.g., Residential Plumbing Project">
+                    </div>
+                    <div class="form-group">
+                        <label for="bestWorks-0-description">Work Description</label>
+                        <input type="text" id="bestWorks-0-description" name="bestWorks[0].description" placeholder="e.g., Complete plumbing system installation">
+                    </div>
+                    <div class="form-group">
+                        <label for="bestWorks-0-imageUrl">Work Image URL (Google Drive)</label>
+                        <input type="url" id="bestWorks-0-imageUrl" name="bestWorks[0].imageUrl" placeholder="e.g., https://drive.google.com/uc?export=view&id=<file_id>">
+                    </div>
+                </div>
+                <button type="button" onclick="addWorkItem()" class="btn-primary mb-4">Add Another Work</button>
+            </div>
+            <button type="submit" class="btn-primary">Create Worker</button>
+        </form>
+    </div>
+
+    <script>
+        let workCount = 1;
+
+        function addWorkItem() {
+            const worksContainer = document.getElementById('best-works');
+            const div = document.createElement('div');
+            div.className = 'work-item';
+            div.id = `work-${workCount}`;
+            div.innerHTML = `
+                <div class="form-group">
+                    <label for="bestWorks-${workCount}-title">Work Title</label>
+                    <input type="text" id="bestWorks-${workCount}-title" name="bestWorks[${workCount}].title" placeholder="e.g., Residential Plumbing Project">
+                </div>
+                <div class="form-group">
+                    <label for="bestWorks-${workCount}-description">Work Description</label>
+                    <input type="text" id="bestWorks-${workCount}-description" name="bestWorks[${workCount}].description" placeholder="e.g., Complete plumbing system installation">
+                </div>
+                <div class="form-group">
+                    <label for="bestWorks-${workCount}-imageUrl">Work Image URL (Google Drive)</label>
+                    <input type="url" id="bestWorks-${workCount}-imageUrl" name="bestWorks[${workCount}].imageUrl" placeholder="e.g., https://drive.google.com/uc?export=view&id=<file_id>">
+                </div>
+                <button type="button" onclick="removeWorkItem(${workCount})" class="btn-primary bg-red-500 hover:bg-red-600">Remove</button>
+            `;
+            worksContainer.insertBefore(div, worksContainer.lastElementChild);
+            workCount++;
+        }
+
+        function removeWorkItem(index) {
+            const workItem = document.getElementById(`work-${index}`);
+            if (workItem) {
+                workItem.remove();
+            }
+        }
+
+        document.getElementById('worker-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const worker = {
+                name: formData.get('name').trim(),
+                profilePicture: formData.get('profilePicture').trim(),
+                title: formData.get('title').trim(),
+                location: formData.get('location').trim(),
+                about: formData.get('about').trim(),
+                badges: formData.get('badges') ? formData.get('badges').split(',').map(b => b.trim()).filter(b => b) : [],
+                bestWorks: [],
+                reviews: []
+            };
+
+            for (let i = 0; i < workCount; i++) {
+                const title = formData.get(`bestWorks[${i}].title`);
+                const description = formData.get(`bestWorks[${i}].description`);
+                const imageUrl = formData.get(`bestWorks[${i}].imageUrl`);
+                if (title && description && imageUrl) {
+                    worker.bestWorks.push({
+                        title: title.trim(),
+                        description: description.trim(),
+                        imageUrl: imageUrl.trim()
+                    });
+                }
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/workers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(worker)
+                });
+                const responseText = await response.text();
+                console.log('Response:', response.status, responseText); // Debug response
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status} - ${responseText}`);
+                }
+                const data = JSON.parse(responseText);
+                alert(`Worker created successfully! ID: ${data._id}\nUse this ID in workers.html?id=${data._id}`);
+                this.reset();
+                workCount = 1;
+                document.getElementById('best-works').innerHTML = `
+                    <h2 class="text-xl font-medium mb-2">Best Works</h2>
+                    <div class="work-item" id="work-0">
+                        <div class="form-group">
+                            <label for="bestWorks-0-title">Work Title</label>
+                            <input type="text" id="bestWorks-0-title" name="bestWorks[0].title" placeholder="e.g., Residential Plumbing Project">
+                        </div>
+                        <div class="form-group">
+                            <label for="bestWorks-0-description">Work Description</label>
+                            <input type="text" id="bestWorks-0-description" name="bestWorks[0].description" placeholder="e.g., Complete plumbing system installation">
+                        </div>
+                        <div class="form-group">
+                            <label for="bestWorks-0-imageUrl">Work Image URL (Google Drive)</label>
+                            <input type="url" id="bestWorks-0-imageUrl" name="bestWorks[0].imageUrl" placeholder="e.g., https://drive.google.com/uc?export=view&id=<file_id>">
+                        </div>
+                    </div>
+                    <button type="button" onclick="addWorkItem()" class="btn-primary mb-4">Add Another Work</button>
+                `;
+            } catch (err) {
+                console.error('Error:', err.message);
+                alert('Failed to create worker: ' + err.message);
+            }
+        });
+    </script>
+</body>
+</html>
