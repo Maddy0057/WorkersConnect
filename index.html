@@ -818,7 +818,7 @@
                 <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2L1 12h3v9h6v-6h4v6h6v-9h3L12 2zm0 2.8L18 9v2h-1v8h-2v-6h-6v6H7v-8H6V9l6-6.2z"/>
                 </svg>
-                WorkersConnect
+                WorkersConnectz
             </a>
             
             <button class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
@@ -1221,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchAndDisplayWorkers() {
     try {
         // const apiUrl = window.location.origin; // e.g., https://workers-connect.vercel.app or http://localhost:3000
-        const response = await fetch(`/api/workers`);
+        const response = await fetch(`http://localhost:3000/api/workers`);
         if (!response.ok) {
             throw new Error(`Failed to fetch workers: ${response.statusText}`);
         }
