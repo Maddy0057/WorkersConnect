@@ -1220,7 +1220,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch and display all workers
     async function fetchAndDisplayWorkers() {
         try {
-            const response = await fetch('http://localhost:3000/api/workers');
+            const response = await fetch('/api/workers');
             if (!response.ok) {
                 throw new Error(`Failed to fetch workers: ${response.statusText}`);
             }
