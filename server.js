@@ -2,10 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const axios = require('axios');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Proxy endpoint for images
@@ -24,9 +26,9 @@ app.get('/proxy-image', async (req, res) => {
 });
 
 // Connect to MongoDB Atlas
-mongoose.connect(process.env.MONGODB_URI, { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true 
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB connection error:', err));
@@ -58,8 +60,8 @@ app.get('/api/workers/:id', async (req, res) => {
 // Get all worker profiles
 app.get('/api/workers', async (req, res) => {
   try {
-    const workers = await Worker.find(); // Fetch all workers from the database
-    res.json(workers); // Respond with the worker data
+    const workers = await Worker.find();
+    res.json(workers);
   } catch (err) {
     console.error('Error fetching workers:', err);
     res.status(500).json({ error: 'Failed to fetch workers' });
@@ -70,12 +72,14 @@ app.get('/api/workers', async (req, res) => {
 app.post('/api/service-requests', async (req, res) => {
   try {
     const { workerId, clientName, clientEmail, message } = req.body;
-    const newRequest = new Request({
+
+    const newRequest = new ServiceRequest({
       workerId,
       clientName,
       clientEmail,
       message
     });
+
     await newRequest.save();
     res.status(201).json({ message: 'Request submitted successfully' });
   } catch (error) {
@@ -83,5 +87,14 @@ app.post('/api/service-requests', async (req, res) => {
   }
 });
 
-// Export for Vercel
-module.exports = app;
+// Serve static files
+app.use(express.static(path.join(__dirname)));
+
+// Root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on http://0.0.0.0:${PORT}`));
