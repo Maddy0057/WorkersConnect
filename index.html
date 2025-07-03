@@ -1221,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchAndDisplayWorkers() {
     try {
         // const apiUrl = window.location.origin; // e.g., https://workers-connect.vercel.app or http://localhost:3000
-        const response = await fetch(`http://localhost:3000/api/workers`);
+        const response = await fetch(`http://localhost:5500/api/workers`);
         if (!response.ok) {
             throw new Error(`Failed to fetch workers: ${response.statusText}`);
         }
